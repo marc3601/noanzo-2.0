@@ -1,4 +1,4 @@
-import { Metadata, ResolvedMetadata } from "next";
+import { Metadata, ResolvingMetadata } from "next";
 
 interface Slug {
   slug: string;
@@ -33,11 +33,10 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Slug;
-}): Promise<Metadata> {
+export async function generateMetadata(
+  { params }: { params: Slug },
+  parent: ResolvingMetadata
+): Promise<Metadata> {
   const product = await getData(params);
 
   return {
