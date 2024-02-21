@@ -9,6 +9,11 @@ interface ProductPage {
   description: string;
 }
 
+type Props = {
+  params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
+};
+
 async function getData(data: Slug) {
   const res = await fetch(
     `https://admin.noanzo.pl/api/auctions?id=${data.slug}`,
@@ -34,14 +39,17 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata(
-  { params }: { params: Slug },
+  { params, searchParams }: Props,
   parent: ResolvingMetadata
 ): Promise<Metadata> {
-  const product = await getData(params);
+  const id = params.id;
+  const product = await fetch(
+    `https://admin.noanzo.pl/api/auctions?id=${id}`
+  ).then((res) => res.json());
 
   return {
-    title: product[0].title,
-    description: product[0].description,
+    title: product.title,
+    description: product.description,
     robots: "index, follow",
   };
 }
