@@ -33,10 +33,11 @@ export async function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata(
-  { params }: { params: Slug },
-  parent: ResolvedMetadata
-): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Slug;
+}): Promise<Metadata> {
   const product = await getData(params);
 
   return {
