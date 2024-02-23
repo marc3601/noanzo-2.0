@@ -1,4 +1,4 @@
-import { Metadata, ResolvedMetadata } from "next";
+import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 
 interface Slug {
@@ -36,7 +36,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata(
   { params }: { params: Slug },
-  parent: ResolvedMetadata
+  parent: ResolvingMetadata
 ): Promise<Metadata> {
   const product = await getData(params);
   return {
