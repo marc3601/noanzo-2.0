@@ -1,4 +1,5 @@
-import { Metadata, ResolvingMetadata } from "next";
+import { Metadata, ResolvedMetadata } from "next";
+import { notFound } from "next/navigation";
 
 interface Slug {
   slug: string;
@@ -8,11 +9,6 @@ interface ProductPage {
   title: string;
   description: string;
 }
-
-type Props = {
-  params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
-};
 
 async function getData(data: Slug) {
   const res = await fetch(
@@ -39,17 +35,13 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata(
-  { params, searchParams }: Props,
-  parent: ResolvingMetadata
+  { params }: { params: Slug },
+  parent: ResolvedMetadata
 ): Promise<Metadata> {
-  const id = params.id;
-  const product = await fetch(
-    `https://admin.noanzo.pl/api/auctions?id=${id}`
-  ).then((res) => res.json());
-
+  const product = await getData(params);
   return {
-    title: product.title,
-    description: product.description,
+    title: product[0]?.title,
+    description: product[0]?.description,
     robots: "index, follow",
   };
 }
@@ -58,6 +50,9 @@ export const dynamicParams = false;
 
 export default async function Page({ params }: { params: Slug }) {
   const data = await getData(params);
+  if (!data || data[0] === null) {
+    notFound();
+  }
   const product: ProductPage = {
     title: data[0].title,
     description: data[0].description,
@@ -65,7 +60,7 @@ export default async function Page({ params }: { params: Slug }) {
 
   return (
     <div>
-      <h1 className='font-bold	'>{product.title}</h1>
+      <h1 className='font-bold'>{product.title}</h1>
       <p>{product.description}</p>
     </div>
   );
