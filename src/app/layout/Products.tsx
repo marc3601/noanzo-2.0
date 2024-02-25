@@ -5,20 +5,20 @@ import Badge from "../components/Badge";
 import useSWR from "swr";
 
 interface Auction {
-  description: String;
+  description: string;
   gif: {
     width: Number;
     height: Number;
-    url: String;
+    url: string;
   };
-  image: Array<String | any>;
+  image: Array<string | any>;
   price: Number;
-  title: String;
-  id: String;
+  title: string;
+  id: string;
 }
 export type BadgeData = {
-  title: String;
-  link: String;
+  title: string;
+  link: string;
 };
 const fetcher = (link: string) => fetch(link).then((res) => res.json());
 
