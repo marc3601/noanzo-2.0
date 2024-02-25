@@ -17,8 +17,8 @@ interface Auction {
   id: String;
 }
 export type BadgeData = {
-  title: string;
-  link: string;
+  title: String;
+  link: String;
 };
 const fetcher = (link: string) => fetch(link).then((res) => res.json());
 
@@ -31,7 +31,7 @@ const Products = () => {
   if (error) return <div>failed to load</div>;
   if (isLoading) return <div>loading...</div>;
 
-  const thumbnails = data.map((item: Auction, id: string): Array<BadgeData> => {
+  const thumbnails = data.map((item: Auction, id: string): BadgeData => {
     let thumb = item.image.filter((item) => item.thumbnail === true);
     if (thumb.length === 0) {
       thumb = [item.image[0]];
