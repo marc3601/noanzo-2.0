@@ -12,10 +12,7 @@ interface ProductPage {
 
 async function getData(data: Slug) {
   const res = await fetch(
-    `https://admin.noanzo.pl/api/auctions?id=${data.slug}`,
-    {
-      cache: "force-cache",
-    }
+    `https://admin.noanzo.pl/api/auctions?id=${data.slug}`
   );
   if (!res.ok) {
     throw new Error("Failed to fetch");
@@ -40,7 +37,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const product = await getData(params);
   return {
-    title: product[0]?.title,
+    title: `${product[0]?.title} - noanzo.pl`,
     description: product[0]?.description,
     robots: "index, follow",
   };

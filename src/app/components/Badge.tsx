@@ -1,12 +1,13 @@
 import React from "react";
 import Image from "next/image";
-const Badge = ({ image }: { image: string }) => {
+import { BadgeData } from "../layout/Products";
+const Badge = ({ data }: { data: BadgeData }) => {
   return (
     <div className='m-2 cursor-pointer'>
       <div className='relative rounded-t-xl h-44 bg-outline-color '>
         <Image
           className='rounded-t-xl'
-          src={image}
+          src={data.link}
           layout='fill'
           objectFit='cover'
           objectPosition='center'
@@ -15,7 +16,7 @@ const Badge = ({ image }: { image: string }) => {
         />
       </div>
       <div className='p-2 rounded-b-xl bg-main-color'>
-        <h3 className='text-center text-white'>Buda dla psa</h3>
+        <h3 className='text-center text-white'>{data.title}</h3>
       </div>
     </div>
   );
