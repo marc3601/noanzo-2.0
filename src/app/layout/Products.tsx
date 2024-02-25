@@ -16,11 +16,11 @@ interface Auction {
   title: String;
   id: String;
 }
-export interface BadgeData {
+export type BadgeData = {
   title: string;
   link: string;
-}
-const fetcher = (...args: any[]) => fetch(...args).then((res) => res.json());
+};
+const fetcher = (link: string) => fetch(link).then((res) => res.json());
 
 const Products = () => {
   const { data, error, isLoading } = useSWR(
