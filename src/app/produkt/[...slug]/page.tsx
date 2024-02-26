@@ -48,21 +48,22 @@ export async function generateMetadata(
 export const dynamicParams = false;
 
 export default async function Page({ params }: { params: Slug }) {
-  const data = await getData(params);
-  if (!data || data[0] === null) {
-    notFound();
-  }
-  const product: ProductPage = {
-    title: data[0].title,
-    description: data[0].description,
-  };
+  // const data = await getData(params);
+  // if (!data || data[0] === null) {
+  //   notFound();
+  // }
+  // const product: ProductPage = {
+  //   title: data[0].title,
+  //   description: data[0].description,
+  // };
 
   return (
     <>
       <Navbar />
       <div className='container mx-auto sm:w-4/5 p-2'>
-        <h1 className='font-bold'>{product.title}</h1>
-        <p>{product.description}</p>
+        {/* <h1 className='font-bold'>{product.title}</h1>
+        <p>{product.description}</p> */}
+        <h1>Product page</h1>
       </div>
       <Products />
     </>
