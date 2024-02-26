@@ -1,3 +1,5 @@
+import Navbar from "@/app/layout/Navbar";
+import Products from "@/app/layout/Products";
 import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -56,9 +58,13 @@ export default async function Page({ params }: { params: Slug }) {
   };
 
   return (
-    <div>
-      <h1 className='font-bold'>{product.title}</h1>
-      <p>{product.description}</p>
-    </div>
+    <>
+      <Navbar />
+      <div className='container mx-auto sm:w-4/5 p-2'>
+        <h1 className='font-bold'>{product.title}</h1>
+        <p>{product.description}</p>
+      </div>
+      <Products />
+    </>
   );
 }

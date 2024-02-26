@@ -2,6 +2,7 @@ import React from "react";
 import Logo from "../assets/Logo";
 import SearchBar from "../components/SearchBar";
 import ContactButton from "../components/ContactButton";
+import Link from "next/link";
 
 export interface LogoSize {
   size: string;
@@ -14,7 +15,9 @@ const size: LogoSize = {
 const Navbar = () => {
   return (
     <div className='container mx-auto sm:w-4/5 flex justify-between align-center'>
-      <Logo size={size} />
+      <Link href={"/"}>
+        <Logo size={size} />
+      </Link>
       <SearchBar />
       <ContactButton text={{ text: "+48 601 208 409" }} />
     </div>
