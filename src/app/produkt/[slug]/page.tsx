@@ -1,4 +1,5 @@
 import Gallery from "@/app/components/Gallery";
+import ProductDescription from "@/app/components/ProductDescription";
 import Navbar from "@/app/layout/Navbar";
 import ProductSection from "@/app/layout/ProductSection";
 import Products from "@/app/layout/Products";
@@ -9,7 +10,8 @@ interface Slug {
   slug: string;
 }
 
-interface ProductPage {
+export interface ProductPage {
+  price: string;
   title: string;
   description: string;
 }
@@ -47,7 +49,7 @@ export async function generateMetadata(
   };
 }
 
-export const dynamicParams = false;
+// export const dynamicParams = false;
 
 export default async function Page({ params }: { params: Slug }) {
   const data = await getData(params);
@@ -57,6 +59,7 @@ export default async function Page({ params }: { params: Slug }) {
   const product: ProductPage = {
     title: data[0].title,
     description: data[0].description,
+    price: data[0].price,
   };
 
   return (
@@ -65,10 +68,7 @@ export default async function Page({ params }: { params: Slug }) {
       <div className='container mx-auto sm:w-4/5 p-2'>
         <ProductSection>
           <Gallery images={data[0].image} />
-          <div>
-            <h1 className='font-bold p-2'>{product.title}</h1>
-            <p className='p-2'>{product.description}</p>
-          </div>
+          <ProductDescription product={product} />
         </ProductSection>
       </div>
       <Products />

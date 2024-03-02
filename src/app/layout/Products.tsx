@@ -42,7 +42,7 @@ const Products = () => {
     return { title: item.title, link: thumb[0].url, slug: item.id };
   });
   return (
-    <div className='container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4  mx-auto sm:w-4/5 m-1 p-2'>
+    <div className='container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 mx-auto sm:w-4/5 m-1 p-2'>
       {thumbnails.map((data: BadgeData, i: number) => (
         <Link key={i} href={`/produkt/${data.slug}`}>
           <Badge data={data} />
