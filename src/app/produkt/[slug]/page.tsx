@@ -1,4 +1,6 @@
+import Gallery from "@/app/components/Gallery";
 import Navbar from "@/app/layout/Navbar";
+import ProductSection from "@/app/layout/ProductSection";
 import Products from "@/app/layout/Products";
 import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
@@ -14,7 +16,7 @@ interface ProductPage {
 
 async function getData(data: Slug) {
   const res = await fetch(
-    `https://admin.noanzo.pl/api/auctions?id=${data.slug}`
+    `${process.env.API_URL}/api/auctions?id=${data.slug}`
   );
   if (!res.ok) {
     throw new Error("Failed to fetch");
@@ -24,7 +26,7 @@ async function getData(data: Slug) {
 }
 
 export async function generateStaticParams() {
-  const params = await fetch("https://admin.noanzo.pl/api/auctions").then(
+  const params = await fetch(`${process.env.API_URL}/api/auctions`).then(
     (res) => res.json()
   );
 
@@ -61,8 +63,13 @@ export default async function Page({ params }: { params: Slug }) {
     <>
       <Navbar />
       <div className='container mx-auto sm:w-4/5 p-2'>
-        <h1 className='font-bold'>{product.title}</h1>
-        <p>{product.description}</p>
+        <ProductSection>
+          <Gallery images={data[0].image} />
+          <div>
+            <h1 className='font-bold p-2'>{product.title}</h1>
+            <p className='p-2'>{product.description}</p>
+          </div>
+        </ProductSection>
       </div>
       <Products />
     </>
