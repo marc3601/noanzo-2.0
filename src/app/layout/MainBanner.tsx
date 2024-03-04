@@ -16,7 +16,7 @@ const MainBanner = () => {
           Ważne żeby były słowa kluczowe na które strona ma się pozycjonować.
         </p>
         <div>
-          <MainCTA text={"+48601208409"} />
+          <MainCTA text={"+48601208409"} colors={["#c7929a", "#d27303"]} />
         </div>
       </div>
 

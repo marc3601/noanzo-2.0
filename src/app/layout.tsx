@@ -29,9 +29,7 @@ export default function RootLayout({
   return (
     <html lang='pl'>
       <body className={inter.className}>
-        <div
-          id='main_container'
-          className='relative p-1 sm:p-3 container mx-auto'>
+        <div id='main_container' className='p-1 sm:p-3 container mx-auto'>
           {children}
         </div>
       </body>

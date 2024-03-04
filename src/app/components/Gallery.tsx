@@ -14,7 +14,7 @@ const Gallery = ({ images }: { images: Array<any> }) => {
   const navNextRef = useRef(null);
 
   return (
-    <div className='p-2 w-full lg:w-1/2'>
+    <div className='p-2 w-full lg:w-1/2 m-w-full transition-none	'>
       <div>
         <Swiper
           slidesPerView={1}
@@ -32,7 +32,7 @@ const Gallery = ({ images }: { images: Array<any> }) => {
           {images.map((image, id) => {
             return (
               <SwiperSlide key={id}>
-                <div className='flex h-full w-full items-center justify-center select-none'>
+                <div className='flex h-full w-full items-center justify-center select-none bg-outline-color'>
                   <Image
                     priority
                     unoptimized
@@ -65,7 +65,7 @@ const Gallery = ({ images }: { images: Array<any> }) => {
             {images.map((image, id) => {
               return (
                 <SwiperSlide key={id}>
-                  <div className='flex h-full w-full rounded-lg items-center justify-center select-none'>
+                  <div className='flex h-full w-full rounded-lg items-center justify-center select-none cursor-pointer bg-outline-color'>
                     <Image
                       priority
                       unoptimized
@@ -89,6 +89,7 @@ const Gallery = ({ images }: { images: Array<any> }) => {
           </div>
         </div>
       </div>
+      {/* <div className='absolute inset-0 z-20 backdrop-blur-md '></div> */}
     </div>
   );
 };

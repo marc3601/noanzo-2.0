@@ -63,15 +63,15 @@ export default async function Page({ params }: { params: Slug }) {
   };
 
   return (
-    <>
+    <main>
       <Navbar />
-      <div className='container mx-auto sm:w-4/5 p-2'>
+      <div className='container mx-auto sm:w-4/5 lg:w-11/12 xl:sm:w-4/5 p-2'>
         <ProductSection>
           <Gallery images={data[0].image} />
           <ProductDescription product={product} />
         </ProductSection>
       </div>
       <Products />
-    </>
+    </main>
   );
 }

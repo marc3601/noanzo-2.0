@@ -14,7 +14,7 @@ const size: LogoSize = {
 
 const Navbar = () => {
   return (
-    <div className='container mx-auto sm:w-4/5 flex justify-between align-center'>
+    <div className='container mx-auto sm:w-4/5 lg:w-11/12 xl:sm:w-4/5 flex justify-between align-center'>
       <Link href={"/"}>
         <Logo size={size} />
       </Link>
