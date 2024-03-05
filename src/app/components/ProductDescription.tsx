@@ -1,8 +1,12 @@
-import React from "react";
+"use client";
+
+import React, { useContext } from "react";
 import type { ProductPage } from "../produkt/[slug]/page";
 import MainCTA from "./MainCTA";
+import { ModalContext } from "../context/ModalContextProvider";
 
 const ProductDescription = ({ product }: { product: ProductPage }) => {
+  const { modal, setModal } = useContext(ModalContext);
   let isTrimmed = false;
   let desc = product.description;
   if (desc.length > 200) {
@@ -19,7 +23,9 @@ const ProductDescription = ({ product }: { product: ProductPage }) => {
           {desc}
           {isTrimmed && <br></br>}
           {isTrimmed && (
-            <span className='text-main-color font-bold underline cursor-pointer'>
+            <span
+              onClick={() => setModal(!modal)}
+              className='text-main-color font-bold underline cursor-pointer'>
               Czytaj więcej
             </span>
           )}

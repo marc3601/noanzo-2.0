@@ -30,8 +30,27 @@ const Products = () => {
     fetcher
   );
 
-  if (error) return <div>failed to load</div>;
-  if (isLoading) return <div>loading...</div>;
+  if (error)
+    return (
+      <div>
+        <p className='text-center'>
+          <b>Coś poszło nie tak...</b>
+        </p>
+      </div>
+    );
+  if (isLoading)
+    return (
+      <div className='container grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 mx-auto sm:w-4/5 lg:w-11/12 xl:w-4/5 m-1 p-2'>
+        <div className='rounded-xl h-52 bg-outline-color m-2'></div>
+        <div className='rounded-xl h-52 bg-outline-color m-2'></div>
+        <div className='rounded-xl h-52 bg-outline-color m-2'></div>
+        <div className='rounded-xl h-52 bg-outline-color m-2'></div>
+        <div className='rounded-xl h-52 bg-outline-color m-2'></div>
+        <div className='rounded-xl h-52 bg-outline-color m-2'></div>
+        <div className='rounded-xl h-52 bg-outline-color m-2'></div>
+        <div className='rounded-xl h-52 bg-outline-color m-2'></div>
+      </div>
+    );
   const shuffle = (array) => {
     let currentIndex = array.length,
       randomIndex;

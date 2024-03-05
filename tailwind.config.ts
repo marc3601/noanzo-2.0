@@ -17,6 +17,8 @@ const config: Config = {
         "outline-color": "rgba(77, 40, 33,0.4)",
         "main-color": "rgb(77, 40, 33)",
         "secondary-color": "linear-gradient(90deg,#c7929a,#d27303)",
+        "background-main":
+          "linear-gradient(360deg,rgba(var(--background-start-rgb)) 0%,rgba(var(--background-end-rgb)) 100%)",
       },
     },
   },

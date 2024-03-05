@@ -67,7 +67,7 @@ export default async function Page({ params }: { params: Slug }) {
       <Navbar />
       <div className='container mx-auto sm:w-4/5 lg:w-11/12 xl:sm:w-4/5 p-2'>
         <ProductSection>
-          <Gallery images={data[0].image} />
+          <Gallery images={data[0].image} product={product} />
           <ProductDescription product={product} />
         </ProductSection>
       </div>
