@@ -6,21 +6,26 @@ import HouseIcon from "../assets/HouseIcon";
 import ArrowIcon from "../assets/ArrowIcon";
 const MainBanner = () => {
   return (
-    <div className='container mx-auto sm:w-4/5 m-1 p-2 md:flex'>
+    <div className='container mx-auto sm:w-4/5 lg:w-11/12 xl:w-4/5 m-1 p-2 md:flex'>
       <div className='relative lg:mt-6'>
         <h1 className='text-4xl	font-bold	leading-normal mt-2 mb-2'>
-          Budy dla psów wszystkich ras.
+          Noanzo.pl - Budy dla psów
         </h1>
         <p className='text-base	leading-loose'>
-          W tym miejscu powinien być jakiś krótki opis firmy i tego co robi.
-          Ważne żeby były słowa kluczowe na które strona ma się pozycjonować.
+          Witaj! Cieszymy się, że znalazłeś chwilę, aby odwiedzić naszą stronę.
+          Z przyjemnością poświęcimy ten czas na zaprezentowanie Ci naszych
+          najnowszych ofert. Prosimy, usiądź wygodnie i pozwól nam zabrać Cię w
+          podróż po naszych budach dla psów.
+        </p>
+        <p className='pt-2 font-bold'>
+          Deweloper dla zwierząt zaprasza do odkrywania!
         </p>
         <div>
           <MainCTA text={"+48601208409"} colors={["#c7929a", "#d27303"]} />
         </div>
       </div>
 
-      <div className='relative md:w-[900px] lg:w-[1100px]'>
+      <div className='relative md:w-[1200px] lg:w-[1400px]'>
         <ArrowIcon />
         <span className='relative left-2/4 -translate-x-1/2	inline-block'>
           <HouseIcon />

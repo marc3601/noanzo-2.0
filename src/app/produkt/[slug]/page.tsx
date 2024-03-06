@@ -5,27 +5,9 @@ import ProductSection from "@/app/layout/ProductSection";
 import Products from "@/app/layout/Products";
 import { Metadata, ResolvingMetadata } from "next";
 import { notFound } from "next/navigation";
-
-interface Slug {
-  slug: string;
-}
-
-export interface ProductPage {
-  price: string;
-  title: string;
-  description: string;
-}
-
-async function getData(data: Slug) {
-  const res = await fetch(
-    `${process.env.API_URL}/api/auctions?id=${data.slug}`
-  );
-  if (!res.ok) {
-    throw new Error("Failed to fetch");
-  }
-
-  return res.json();
-}
+import { Slug } from "@/app/types/types";
+import { ProductPage } from "@/app/types/types";
+import { getData } from "@/app/utils/getData";
 
 export async function generateStaticParams() {
   const params = await fetch(`${process.env.API_URL}/api/auctions`).then(
@@ -46,10 +28,28 @@ export async function generateMetadata(
     title: `${product[0]?.title} - noanzo.pl`,
     description: product[0]?.description,
     robots: "index, follow",
+    openGraph: {
+      title: `${product[0]?.title} - noanzo.pl`,
+      description: product[0]?.description,
+      locale: "pl",
+      images: [
+        {
+          url: (() => {
+            const link = product[0]?.image.filter(
+              (item: any) => item.thumbnail === true
+            );
+            if (link[0]?.url) {
+              return link[0].url;
+            } else {
+              return product[0].image[0].url;
+            }
+          })(),
+          alt: product[0]?.title,
+        },
+      ],
+    },
   };
 }
-
-// export const dynamicParams = false;
 
 export default async function Page({ params }: { params: Slug }) {
   const data = await getData(params);

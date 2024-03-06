@@ -9,7 +9,7 @@ import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import ArrowEnabled from "../assets/ArrowEnabled";
 import { ModalContext } from "../context/ModalContextProvider";
-import { ProductPage } from "../produkt/[slug]/page";
+import { ProductPage } from "../types/types";
 import { isMobile } from "react-device-detect";
 import "swiper/css/navigation";
 import CloseIcon from "../assets/CloseIcon";
@@ -61,7 +61,7 @@ const Gallery = ({
                     src={image.url}
                     width={image.width}
                     height={image.height}
-                    alt='sample alt'
+                    alt={product.title}
                     className='block h-full w-full object-cover rounded-md'
                   />
                 </div>
@@ -94,7 +94,7 @@ const Gallery = ({
                       src={image.url}
                       width={image.width}
                       height={image.height}
-                      alt='sample alt'
+                      alt={product.title}
                       className='block h-full w-full object-cover rounded'
                     />
                   </div>
@@ -133,7 +133,7 @@ const Gallery = ({
                             src={image.url}
                             width={image.width}
                             height={image.height}
-                            alt='sample alt'
+                            alt={product.title}
                             className='block h-full w-full object-contain'
                           />
                         </div>

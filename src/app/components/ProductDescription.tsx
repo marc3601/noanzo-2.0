@@ -33,8 +33,8 @@ const ProductDescription = ({ product }: { product: ProductPage }) => {
         <p className='p-2 lg:hidden'>{product.description}</p>
       </div>
       <div className='p-2 flex justify-between'>
-        <MainCTA text={"+48 601208409"} colors={["#c7929a", "#d27303"]} />
-        <MainCTA text={`${product.price} zł`} colors={["#c7929a", "#d27303"]} />
+        <MainCTA text={"+48 601208409"} />
+        <MainCTA text={`${product.price} zł`} noaction />
       </div>
     </div>
   );

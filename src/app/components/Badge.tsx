@@ -11,7 +11,7 @@ const Badge = ({ data }: { data: BadgeData }) => {
           layout='fill'
           objectFit='cover'
           objectPosition='center'
-          alt='image'
+          alt={data.title}
           unoptimized={true}
         />
       </div>

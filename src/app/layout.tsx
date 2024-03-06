@@ -11,6 +11,19 @@ export const metadata: Metadata = {
   title: "Budy dla psów - noanzo.pl",
   description:
     "Oferujemy budy dla psów wszystkich ras. Wykonane solidne i trwale z drewna o najwyższej jakości. Krótkie terminy realizacji zamówień.",
+  keywords: ["Budy dla psów", "Domki dla zwierząt"],
+  openGraph: {
+    title: "Budy dla psów - noanzo.pl",
+    description:
+      "Oferujemy budy dla psów wszystkich ras. Wykonane solidne i trwale z drewna o najwyższej jakości. Krótkie terminy realizacji zamówień.",
+    locale: "pl",
+    images: [
+      {
+        url: "https://admin.noanzo.pl/images/179d4fc6ec30d5e2c116c059449ac3ef",
+        alt: "Buda dla psa noanzo",
+      },
+    ],
+  },
 };
 
 export const viewport: Viewport = {
