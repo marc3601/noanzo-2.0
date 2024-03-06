@@ -1,4 +1,5 @@
 import React from "react";
+import Beacon from "./Beacon";
 
 const SearchBar = () => {
   return (
@@ -6,6 +7,7 @@ const SearchBar = () => {
       <input
         className='w-full h-8 rounded-md	outline outline-1 outline-outline-color p-1 text-xs drop-shadow-sm	focus:drop-shadow-lg'
         placeholder='Szukaj...'></input>
+      <Beacon />
     </div>
   );
 };

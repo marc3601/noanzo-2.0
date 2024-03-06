@@ -8,6 +8,7 @@ import { notFound } from "next/navigation";
 import { Slug } from "@/app/types/types";
 import { ProductPage } from "@/app/types/types";
 import { getData } from "@/app/utils/getData";
+import Beacon from "@/app/components/Beacon";
 
 export async function generateStaticParams() {
   const params = await fetch(`${process.env.API_URL}/api/auctions`).then(
