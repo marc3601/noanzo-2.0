@@ -38,6 +38,9 @@ export async function generateMetadata(
             const link = product[0]?.image.filter(
               (item: any) => item.thumbnail === true
             );
+            if (!product[0]) {
+              notFound();
+            }
             if (link[0]?.url) {
               return link[0].url;
             } else {

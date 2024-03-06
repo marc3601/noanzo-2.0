@@ -14,7 +14,6 @@ export async function generateStaticParams() {
 
 export default async function Page({ params }: { params: Slug }) {
   const data = await getData(params);
-  console.log(data);
   if (!data || data[0] === null) {
     notFound();
   } else {

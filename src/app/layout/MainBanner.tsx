@@ -12,16 +12,16 @@ const MainBanner = () => {
           Noanzo.pl - Budy dla psów
         </h1>
         <p className='text-base	leading-loose'>
-          Witaj! Cieszymy się, że znalazłeś chwilę, aby odwiedzić naszą stronę.
-          Z przyjemnością poświęcimy ten czas na zaprezentowanie Ci naszych
-          najnowszych ofert. Prosimy, usiądź wygodnie i pozwól nam zabrać Cię w
-          podróż po naszych budach dla psów.
+          Witaj! Szukasz budy dla psa? Cieszymy się, że znalazłeś chwilę, aby
+          odwiedzić naszą stronę. Z przyjemnością poświęcimy ten czas na
+          zaprezentowanie Ci naszych najnowszych ofert. Prosimy, usiądź wygodnie
+          i pozwól nam zabrać Cię w podróż po naszych wyrobach.
         </p>
         <p className='pt-2 font-bold'>
           Deweloper dla zwierząt zaprasza do odkrywania!
         </p>
         <div>
-          <MainCTA text={"+48601208409"} colors={["#c7929a", "#d27303"]} />
+          <MainCTA text={"+48601208409"} />
         </div>
       </div>
 
