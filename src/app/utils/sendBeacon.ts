@@ -8,7 +8,7 @@ async function sendBeacon(url = "", data = {}) {
     },
     body: JSON.stringify(data), // body data type must match "Content-Type" header
   }).catch((err) => console.warn(err.message));
-  return response.json(); // parses JSON response into native JavaScript objects
+  return response; // parses JSON response into native JavaScript objects
 }
 
 export default sendBeacon;

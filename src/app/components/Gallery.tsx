@@ -13,17 +13,13 @@ import { ProductPage } from "../types/types";
 import { isMobile } from "react-device-detect";
 import "swiper/css/navigation";
 import CloseIcon from "../assets/CloseIcon";
-const Gallery = ({
-  images,
-  product,
-}: {
-  images: Array<any>;
-  product: ProductPage;
-}) => {
+const Gallery = ({ product }: { product: ProductPage }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<Swiper | null>(null);
   const { modal, setModal } = useContext(ModalContext);
   const navPrevRef = useRef(null);
   const navNextRef = useRef(null);
+  const enlargedImages =
+    product.imageLarge?.length > 0 ? product.imageLarge : product.image;
 
   useEffect(() => {
     if (modal) {
@@ -51,7 +47,7 @@ const Gallery = ({
           }}
           modules={[Navigation, Thumbs]}
           className='h-64 sm:h-80 md:h-96 lg:h-80 xl:h-96 rounded-md'>
-          {images.map((image, id) => {
+          {product.image.map((image, id) => {
             return (
               <SwiperSlide key={id}>
                 <div className='flex h-full w-full items-center justify-center select-none bg-outline-color'>
@@ -84,7 +80,7 @@ const Gallery = ({
             spaceBetween={10}
             modules={[Navigation, Thumbs]}
             className='thumb h-16 w-2/3 lg:w-2/5'>
-            {images.map((image, id) => {
+            {product.image.map((image, id) => {
               return (
                 <SwiperSlide key={id}>
                   <div className='flex h-full w-full rounded-lg items-center justify-center select-none cursor-pointer bg-outline-color'>
@@ -123,7 +119,7 @@ const Gallery = ({
                   modules={[Navigation, Thumbs]}
                   navigation
                   className='h-full'>
-                  {images.map((image, id) => {
+                  {enlargedImages.map((image, id) => {
                     return (
                       <SwiperSlide key={id}>
                         <div className='flex h-full w-full items-center justify-center select-none'>
@@ -144,15 +140,17 @@ const Gallery = ({
               </div>
             </div>
           </div>
-          <div className='h-full w-[400px]'>
+          <div className='h-full w-[400px] overflow-y-scroll'>
             <div className='p-4 flex justify-end'>
               <span className='cursor-pointer' onClick={() => setModal(!modal)}>
                 <CloseIcon />
               </span>
             </div>
-            <div className='p-4'>
+            <div className='m-{70px} p-4'>
               <h1 className='font-bold text-2xl'>{product.title}</h1>
-              <p className='pt-4'>{product.description}</p>
+            </div>
+            <div className='p-4'>
+              <p>{product.description}</p>
             </div>
           </div>
         </div>

@@ -5,6 +5,8 @@ export interface ProductPage {
   price: string;
   title: string;
   description: string;
+  image: Array<any>;
+  imageLarge: Array<any>;
 }
 export interface BadgeData extends Array<any> {
   title: string;

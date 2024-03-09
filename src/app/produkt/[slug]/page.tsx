@@ -8,7 +8,6 @@ import { notFound } from "next/navigation";
 import { Slug } from "@/app/types/types";
 import { ProductPage } from "@/app/types/types";
 import { getData } from "@/app/utils/getData";
-import Beacon from "@/app/components/Beacon";
 
 export async function generateStaticParams() {
   const params = await fetch(`${process.env.API_URL}/api/auctions`).then(
@@ -64,6 +63,8 @@ export default async function Page({ params }: { params: Slug }) {
     title: data[0].title,
     description: data[0].description,
     price: data[0].price,
+    image: data[0].image,
+    imageLarge: data[0].imageLarge,
   };
 
   return (
@@ -71,7 +72,7 @@ export default async function Page({ params }: { params: Slug }) {
       <Navbar />
       <div className='container mx-auto sm:w-4/5 lg:w-11/12 xl:sm:w-4/5 p-2'>
         <ProductSection>
-          <Gallery images={data[0].image} product={product} />
+          <Gallery product={product} />
           <ProductDescription product={product} />
         </ProductSection>
       </div>
