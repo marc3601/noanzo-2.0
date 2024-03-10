@@ -26,10 +26,14 @@ export async function generateMetadata(
   parent: ResolvingMetadata
 ): Promise<Metadata> {
   const product = await getData(params);
+  const url = "https://noanzo.pl";
   return {
     title: `${product[0]?.title} - noanzo.pl`,
     description: product[0]?.description,
     robots: "index, follow",
+    alternates: {
+      canonical: `${url}/produkt/${params.slug}`,
+    },
     openGraph: {
       title: `${product[0]?.title} - noanzo.pl`,
       description: product[0]?.description,

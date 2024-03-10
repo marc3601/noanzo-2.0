@@ -12,6 +12,9 @@ export const metadata: Metadata = {
   description:
     "Oferujemy budy dla psów wszystkich ras. Wykonane solidne i trwale z drewna o najwyższej jakości. Krótkie terminy realizacji zamówień.",
   keywords: ["Budy dla psów", "Domki dla zwierząt"],
+  alternates: {
+    canonical: "https://noanzo.pl",
+  },
   openGraph: {
     title: "Budy dla psów - noanzo.pl",
     description:
