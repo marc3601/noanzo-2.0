@@ -13,6 +13,7 @@ import { ProductPage } from "../types/types";
 import { isMobile } from "react-device-detect";
 import "swiper/css/navigation";
 import CloseIcon from "../assets/CloseIcon";
+import TextWithBreaks from "./TextWithBreaks";
 const Gallery = ({ product }: { product: ProductPage }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<Swiper | null>(null);
   const { modal, setModal } = useContext(ModalContext);
@@ -150,7 +151,9 @@ const Gallery = ({ product }: { product: ProductPage }) => {
               <h1 className='font-bold text-2xl'>{product.title}</h1>
             </div>
             <div className='p-4'>
-              <p>{product.description}</p>
+              <p>
+                <TextWithBreaks text={product.description} />
+              </p>
             </div>
           </div>
         </div>
