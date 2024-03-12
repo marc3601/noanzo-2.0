@@ -4,6 +4,7 @@ import React, { useContext } from "react";
 import type { ProductPage } from "../produkt/[slug]/page";
 import MainCTA from "./MainCTA";
 import { ModalContext } from "../context/ModalContextProvider";
+import TextWithBreaks from "./TextWithBreaks";
 
 const ProductDescription = ({ product }: { product: ProductPage }) => {
   const { modal, setModal } = useContext(ModalContext);
@@ -30,7 +31,9 @@ const ProductDescription = ({ product }: { product: ProductPage }) => {
             </span>
           )}
         </p>
-        <p className='p-2 lg:hidden'>{product.description}</p>
+        <p className='p-2 lg:hidden'>
+          <TextWithBreaks text={product.description} />
+        </p>
       </div>
       <div className='p-2 flex justify-between'>
         <MainCTA text={"+48 601208409"} />
