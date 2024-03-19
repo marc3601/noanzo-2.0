@@ -21,7 +21,7 @@ export async function generateStaticParams() {
   const slugs = generateSlugs(params);
 
   return slugs.map((slug: Slug) => ({
-    slug: slug.id,
+    slug: slug.slug,
   }));
 }
 
