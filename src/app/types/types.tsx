@@ -1,5 +1,6 @@
 export interface Slug {
   slug: string;
+  id: string;
 }
 export interface ProductPage {
   price: string;

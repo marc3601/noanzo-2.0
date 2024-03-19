@@ -8,16 +8,20 @@ import { notFound } from "next/navigation";
 import { Slug } from "@/app/types/types";
 import { ProductPage } from "@/app/types/types";
 import { getData } from "@/app/utils/getData";
+import generateSlugs from "@/app/utils/generateSlugs";
 
 export const preferredRegion = ["fra1"];
 export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
   const params = await fetch(`${process.env.API_URL}/api/auctions`).then(
     (res) => res.json()
   );
 
-  return params.map((slug: Slug) => ({
-    slug: slug.slug,
+  const slugs = generateSlugs(params);
+
+  return slugs.map((slug: Slug) => ({
+    slug: slug.id,
   }));
 }
 
@@ -61,6 +65,7 @@ export async function generateMetadata(
 }
 
 export default async function Page({ params }: { params: Slug }) {
+  console.log(params);
   const data = await getData(params);
   if (!data || data[0] === null) {
     notFound();
