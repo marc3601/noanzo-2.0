@@ -5,7 +5,7 @@ import { Slug } from "../types/types";
 export const preferredRegion = ["fra1"];
 export const dynamic = "force-dynamic";
 export async function generateStaticParams() {
-  const params = await fetch(`${process.env.API_URL}/api/auctions`).then(
+  const params = await fetch(`https://admin.noanzo.pl/api/auctions`).then(
     (res) => res.json()
   );
 

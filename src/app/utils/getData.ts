@@ -2,7 +2,7 @@ import { Slug } from "../types/types";
 
 export async function getData(data: Slug) {
   const res = await fetch(
-    `${process.env.API_URL}/api/auctions?id=${data.slug}`,
+    `https://admin.noanzo.pl/api/auctions?id=${data.slug}`,
     { cache: "no-store" }
   );
   if (!res.ok) {

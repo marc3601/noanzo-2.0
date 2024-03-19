@@ -7,7 +7,7 @@ export default async function sitemap({
 }: {
   id: number;
 }): Promise<MetadataRoute.Sitemap> {
-  const products = await fetch(`${process.env.API_URL}/api/auctions`).then(
+  const products = await fetch(`https://admin.noanzo.pl/api/auctions`).then(
     (res) => res.json()
   );
 
