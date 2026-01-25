@@ -18,12 +18,26 @@ import TextWithBreaks from "./TextWithBreaks";
 
 const Gallery = ({ product }: { product: ProductPage }) => {
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
+  const [modalThumbsSwiper, setModalThumbsSwiper] = useState<SwiperType | null>(null);
   const { modal, setModal } = useContext(ModalContext);
   const navPrevRef = useRef(null);
   const navNextRef = useRef(null);
   const mainSwiperRef = useRef<SwiperType | null>(null);
-  const enlargedImages =
-    product.imageLarge?.length > 0 ? product.imageLarge : product.image;
+  const modalSwiperRef = useRef<SwiperType | null>(null);
+
+  // Sort images to put thumbnail first
+  const sortedImages = [...product.image].sort((a, b) => {
+    if (a.thumbnail && !b.thumbnail) return -1;
+    if (!a.thumbnail && b.thumbnail) return 1;
+    return 0;
+  });
+
+  // Sort large images based on the sorted order of regular images
+  const sortedEnlargedImages = product.imageLarge?.length > 0 
+    ? sortedImages.map(img => 
+        product.imageLarge.find(largeImg => largeImg.id === img.id)
+      ).filter((img): img is NonNullable<typeof img> => img !== undefined)
+    : sortedImages;
   
   const isSingleImage = product.image.length === 1;
   const galleryWidthClass = isSingleImage 
@@ -46,16 +60,46 @@ const Gallery = ({ product }: { product: ProductPage }) => {
     }
   }, []);
 
+  // Sync main gallery with modal gallery
+  const handleMainSlideChange = (swiper: SwiperType) => {
+    if (modalSwiperRef.current && modal) {
+      modalSwiperRef.current.slideTo(swiper.activeIndex);
+    }
+  };
+
+  // Sync modal gallery with main gallery
+  const handleModalSlideChange = (swiper: SwiperType) => {
+    if (mainSwiperRef.current) {
+      mainSwiperRef.current.slideTo(swiper.activeIndex);
+    }
+  };
+
+  // When modal opens, sync to current slide
+  useEffect(() => {
+    if (modal && modalSwiperRef.current && mainSwiperRef.current) {
+      const currentIndex = mainSwiperRef.current.activeIndex;
+      // Wait for next frame to ensure modal is fully rendered
+      requestAnimationFrame(() => {
+        if (modalSwiperRef.current) {
+          modalSwiperRef.current.update();
+          modalSwiperRef.current.slideTo(currentIndex, 0);
+        }
+      });
+    }
+  }, [modal]);
+
   return (
     <div className={`p-2 w-full transition-none ${galleryWidthClass}`}>
       <div
-        onClick={!isMobile ? () => setModal(!modal) : null}
+        onClick={!isMobile ? () => setModal(!modal) : undefined}
         className='cursor-pointer'>
         <div className='h-64 sm:h-80 md:h-96 lg:h-80 xl:h-96 rounded-md'>
           <Swiper
+            key="main-swiper"
             onSwiper={(swiper) => {
               mainSwiperRef.current = swiper;
             }}
+            onSlideChange={handleMainSlideChange}
             slidesPerView={1}
             spaceBetween={10}
             thumbs={{
@@ -72,9 +116,9 @@ const Gallery = ({ product }: { product: ProductPage }) => {
             observer={true}
             observeParents={true}
             updateOnWindowResize={true}>
-            {product.image.map((image, id) => {
+            {sortedImages.map((image) => {
               return (
-                <SwiperSlide key={id}>
+                <SwiperSlide key={image.id}>
                   <div className='flex h-full w-full items-center justify-center select-none bg-outline-color'>
                     <Image
                       priority
@@ -97,19 +141,21 @@ const Gallery = ({ product }: { product: ProductPage }) => {
           <div className='flex'>
             <div
               className='flex items-center justify-center cursor-pointer'
-              ref={navPrevRef}>
+              ref={navPrevRef}
+              key="nav-prev">
               <ArrowEnabled left />
             </div>
             <Swiper
+              key="thumb-swiper"
               onSwiper={setThumbsSwiper}
               slidesPerView={3}
               spaceBetween={10}
               modules={[Navigation, Thumbs]}
               className='thumb h-16 w-2/3 lg:w-2/5'
               watchOverflow={true}>
-              {product.image.map((image, id) => {
+              {sortedImages.map((image) => {
                 return (
-                  <SwiperSlide key={id}>
+                  <SwiperSlide key={image.id}>
                     <div className='flex h-full w-full rounded-lg items-center justify-center select-none cursor-pointer bg-outline-color'>
                       <Image
                         priority
@@ -127,7 +173,8 @@ const Gallery = ({ product }: { product: ProductPage }) => {
             </Swiper>
             <div
               className='flex items-center justify-center cursor-pointer'
-              ref={navNextRef}>
+              ref={navNextRef}
+              key="nav-next">
               <ArrowEnabled />
             </div>
           </div>
@@ -139,7 +186,11 @@ const Gallery = ({ product }: { product: ProductPage }) => {
             <div className='size-full flex items-center justify-center'>
               <div className='w-full h-full m-2 bg-main-color'>
                 <Swiper
-                  onSwiper={setThumbsSwiper}
+                  key="modal-swiper"
+                  onSwiper={(swiper) => {
+                    modalSwiperRef.current = swiper;
+                  }}
+                  onSlideChange={handleModalSlideChange}
                   slidesPerView={1}
                   spaceBetween={10}
                   modules={[Navigation, Thumbs]}
@@ -149,9 +200,9 @@ const Gallery = ({ product }: { product: ProductPage }) => {
                   observeParents={true}
                   updateOnWindowResize={true}
                   watchOverflow={true}>
-                  {enlargedImages.map((image, id) => {
+                  {sortedEnlargedImages.map((image) => {
                     return (
-                      <SwiperSlide key={id}>
+                      <SwiperSlide key={image.id}>
                         <div className='flex h-full w-full items-center justify-center select-none'>
                           <Image
                             priority
