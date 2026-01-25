@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import { BadgeData } from "../layout/Products";
+
 const Badge = ({ data }: { data: BadgeData }) => {
   return (
     <div className='m-2 cursor-pointer'>
@@ -16,7 +17,9 @@ const Badge = ({ data }: { data: BadgeData }) => {
         />
       </div>
       <div className='p-2 rounded-b-xl bg-main-color'>
-        <h3 className='text-center text-white'>{data.title}</h3>
+        <h3 className='text-center text-white truncate' title={data.title}>
+          {data.title}
+        </h3>
       </div>
     </div>
   );
