@@ -11,6 +11,7 @@ import { getData } from "@/app/utils/getData";
 
 export const preferredRegion = ["fra1"];
 export const dynamic = "force-dynamic";
+
 export async function generateStaticParams() {
   const params = await fetch(`${process.env.API_URL}/api/auctions`).then(
     (res) => res.json()
@@ -27,6 +28,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const product = await getData(params);
   const url = "https://noanzo.pl";
+
   return {
     title: `${product[0]?.title} - noanzo.pl`,
     description: product[0]?.description,
@@ -62,9 +64,11 @@ export async function generateMetadata(
 
 export default async function Page({ params }: { params: Slug }) {
   const data = await getData(params);
+
   if (!data || data[0] === null) {
     notFound();
   }
+
   const product: ProductPage = {
     title: data[0].title,
     description: data[0].description,
@@ -76,13 +80,15 @@ export default async function Page({ params }: { params: Slug }) {
   return (
     <main>
       <Navbar />
-      <div className='container mx-auto sm:w-4/5 lg:w-11/12 xl:sm:w-4/5 p-2'>
+      <div className="container mx-auto sm:w-4/5 lg:w-11/12 xl:sm:w-4/5 p-2">
         <ProductSection>
           <Gallery product={product} />
           <ProductDescription product={product} />
         </ProductSection>
       </div>
-      <Products />
+
+      {/* 👇 exclude current product */}
+      <Products excludeSlug={params.slug} />
     </main>
   );
 }
