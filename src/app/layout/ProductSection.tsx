@@ -5,7 +5,7 @@ import { ModalContextProvider } from "../context/ModalContextProvider";
 const ProductSection = ({ children }: { children: React.ReactNode }) => {
   return (
     <ModalContextProvider>
-      <div className='flex flex-col mt-4 mb-4 lg:p-4 lg:flex-row'>
+      <div className="flex flex-col mt-4 mb-4 lg:p-4 lg:flex-row lg:gap-8 lg:items-start">
         {children}
       </div>
     </ModalContextProvider>

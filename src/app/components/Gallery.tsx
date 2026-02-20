@@ -11,227 +11,273 @@ import "swiper/css/thumbs";
 import ArrowEnabled from "../assets/ArrowEnabled";
 import { ModalContext } from "../context/ModalContextProvider";
 import { ProductPage } from "../types/types";
-import { isMobile } from "react-device-detect";
-import "swiper/css/navigation";
 import CloseIcon from "../assets/CloseIcon";
 import TextWithBreaks from "./TextWithBreaks";
 
 const Gallery = ({ product }: { product: ProductPage }) => {
+  const isSingleImage = product.image.length === 1;
+
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType | null>(null);
-  const [modalThumbsSwiper, setModalThumbsSwiper] = useState<SwiperType | null>(null);
+  const [swiperReady, setSwiperReady] = useState(isSingleImage); // single image never needs Swiper
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
   const { modal, setModal } = useContext(ModalContext);
   const navPrevRef = useRef(null);
   const navNextRef = useRef(null);
   const mainSwiperRef = useRef<SwiperType | null>(null);
   const modalSwiperRef = useRef<SwiperType | null>(null);
 
-  // Sort images to put thumbnail first
+  // Detect mobile client-side only to avoid hydration mismatch
+  useEffect(() => {
+    setIsMobileDevice(/Mobi|Android/i.test(navigator.userAgent));
+  }, []);
+
   const sortedImages = [...product.image].sort((a, b) => {
     if (a.thumbnail && !b.thumbnail) return -1;
     if (!a.thumbnail && b.thumbnail) return 1;
     return 0;
   });
 
-  // Sort large images based on the sorted order of regular images
-  const sortedEnlargedImages = product.imageLarge?.length > 0 
-    ? sortedImages.map(img => 
-        product.imageLarge.find(largeImg => largeImg.id === img.id)
-      ).filter((img): img is NonNullable<typeof img> => img !== undefined)
-    : sortedImages;
-  
-  const isSingleImage = product.image.length === 1;
-  const galleryWidthClass = isSingleImage 
-    ? 'lg:w-2/3 min-w-0' 
-    : 'lg:w-3/5 xl:w-1/2';
+  const sortedEnlargedImages =
+    product.imageLarge?.length > 0
+      ? sortedImages
+          .map((img) => product.imageLarge.find((l) => l.id === img.id))
+          .filter((img): img is NonNullable<typeof img> => img !== undefined)
+      : sortedImages;
+
+  const galleryDesktopClass = isSingleImage ? "lg:w-1/2" : "lg:w-3/5 xl:w-1/2";
 
   useEffect(() => {
-    if (modal) {
-      document.body.classList.add("overflow-hidden");
-    } else {
-      document.body.classList.remove("overflow-hidden");
-    }
+    document.body.classList.toggle("overflow-hidden", modal);
+    return () => { document.body.classList.remove("overflow-hidden"); };
   }, [modal]);
 
+  const isInitialized = useRef(false);
+
   useEffect(() => {
-    if (mainSwiperRef.current) {
-      setTimeout(() => {
-        mainSwiperRef.current?.update();
-      }, 0);
-    }
+    // No setTimeout update — that was causing Swiper to re-measure
+    // and animate its slide width on mount.
   }, []);
 
-  // Sync main gallery with modal gallery
   const handleMainSlideChange = (swiper: SwiperType) => {
     if (modalSwiperRef.current && modal) {
       modalSwiperRef.current.slideTo(swiper.activeIndex);
     }
   };
 
-  // Sync modal gallery with main gallery
   const handleModalSlideChange = (swiper: SwiperType) => {
-    if (mainSwiperRef.current) {
-      mainSwiperRef.current.slideTo(swiper.activeIndex);
-    }
+    mainSwiperRef.current?.slideTo(swiper.activeIndex);
   };
 
-  // When modal opens, sync to current slide
   useEffect(() => {
     if (modal && modalSwiperRef.current && mainSwiperRef.current) {
-      const currentIndex = mainSwiperRef.current.activeIndex;
-      // Wait for next frame to ensure modal is fully rendered
+      const idx = mainSwiperRef.current.activeIndex;
       requestAnimationFrame(() => {
-        if (modalSwiperRef.current) {
-          modalSwiperRef.current.update();
-          modalSwiperRef.current.slideTo(currentIndex, 0);
-        }
+        modalSwiperRef.current?.update();
+        modalSwiperRef.current?.slideTo(idx, 0);
       });
     }
   }, [modal]);
 
   return (
-    <div className={`p-2 w-full transition-none ${galleryWidthClass}`}>
+    <div
+      className={`p-2 w-full transition-none ${galleryDesktopClass} ${!isSingleImage ? "lg:flex-none" : ""}`}
+    >
+
+      {/* Main image — explicit aspect ratio reserves space before Swiper hydrates */}
       <div
-        onClick={!isMobile ? () => setModal(!modal) : undefined}
-        className='cursor-pointer'>
-        <div className='h-64 sm:h-80 md:h-96 lg:h-80 xl:h-96 rounded-md'>
-          <Swiper
-            key="main-swiper"
-            onSwiper={(swiper) => {
-              mainSwiperRef.current = swiper;
-            }}
-            onSlideChange={handleMainSlideChange}
-            slidesPerView={1}
-            spaceBetween={10}
-            thumbs={{
-              swiper:
-                thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
-            }}
-            navigation={{
-              prevEl: navPrevRef.current,
-              nextEl: navNextRef.current,
-            }}
-            modules={[Navigation, Thumbs]}
-            className='h-full w-full rounded-md'
-            watchOverflow={true}
-            observer={true}
-            observeParents={true}
-            updateOnWindowResize={true}>
-            {sortedImages.map((image) => {
-              return (
-                <SwiperSlide key={image.id}>
-                  <div className='flex h-full w-full items-center justify-center select-none bg-outline-color'>
-                    <Image
-                      priority
-                      unoptimized
-                      src={image.url}
-                      width={image.width}
-                      height={image.height}
-                      alt={product.title}
-                      className='block h-full w-full object-cover rounded-md'
-                    />
-                  </div>
-                </SwiperSlide>
-              );
-            })}
-          </Swiper>
-        </div>
-      </div>
-      {product.image.length > 1 && (
-        <div className='mt-5'>
-          <div className='flex'>
-            <div
-              className='flex items-center justify-center cursor-pointer'
-              ref={navPrevRef}
-              key="nav-prev">
-              <ArrowEnabled left />
-            </div>
-            <Swiper
-              key="thumb-swiper"
-              onSwiper={setThumbsSwiper}
-              slidesPerView={3}
-              spaceBetween={10}
-              modules={[Navigation, Thumbs]}
-              className='thumb h-16 w-2/3 lg:w-2/5'
-              watchOverflow={true}>
-              {sortedImages.map((image) => {
-                return (
+        onClick={!isMobileDevice ? () => setModal(!modal) : undefined}
+        className="cursor-pointer"
+      >
+        <div
+          className="h-64 sm:h-80 md:h-96 lg:h-80 xl:h-96 rounded-2xl overflow-hidden bg-[#e8ddd8]"
+          style={{ boxShadow: "0 4px 20px rgba(76,41,34,0.12)" }}
+        >
+          {!isSingleImage && !swiperReady && (
+            /* Skeleton placeholder — holds exact layout space while Swiper initialises.
+               Prevents the layout shift on desktop by reserving the right height
+               before the carousel mounts. Invisible once Swiper fires onSwiper. */
+            <div className="h-64 sm:h-80 md:h-96 lg:h-80 xl:h-96 rounded-2xl overflow-hidden bg-[#e8ddd8] animate-pulse" />
+          )}
+
+          <div className={`h-full ${!isSingleImage && !swiperReady ? "hidden" : ""}`}>
+            {isSingleImage ? (
+              /* No Swiper for single image — eliminates the internal
+                 resize-then-animate cycle that caused the widening effect */
+              <Image
+                priority unoptimized
+                src={sortedImages[0].url}
+                width={sortedImages[0].width}
+                height={sortedImages[0].height}
+                alt={product.title}
+                className="block h-full w-full object-cover"
+              />
+            ) : (
+              <Swiper
+                onSwiper={(s) => { mainSwiperRef.current = s; setSwiperReady(true); }}
+                onSlideChange={handleMainSlideChange}
+                slidesPerView={1}
+                spaceBetween={10}
+                thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
+                navigation={{ prevEl: navPrevRef.current, nextEl: navNextRef.current }}
+                modules={[Navigation, Thumbs]}
+                className="h-full w-full rounded-2xl"
+                watchOverflow observer observeParents updateOnWindowResize
+              >
+                {sortedImages.map((image) => (
                   <SwiperSlide key={image.id}>
-                    <div className='flex h-full w-full rounded-lg items-center justify-center select-none cursor-pointer bg-outline-color'>
+                    <div className="flex h-full w-full items-center justify-center select-none">
                       <Image
-                        priority
-                        unoptimized
+                        priority unoptimized
                         src={image.url}
                         width={image.width}
                         height={image.height}
                         alt={product.title}
-                        className='block h-full w-full object-cover rounded'
+                        className="block h-full w-full object-cover"
                       />
                     </div>
                   </SwiperSlide>
-                );
-              })}
+                ))}
+              </Swiper>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Thumbnails — reserve height so layout doesn't shift when swiper mounts */}
+      {product.image.length > 1 && (
+        <div className="mt-3 h-16">
+          <div className="flex items-center gap-2 h-full">
+            <button
+              ref={navPrevRef}
+              className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg hover:bg-[#4C2922]/8 transition-colors"
+            >
+              <ArrowEnabled left />
+            </button>
+            <Swiper
+              onSwiper={setThumbsSwiper}
+              slidesPerView={4}
+              spaceBetween={8}
+              modules={[Navigation, Thumbs]}
+              className="h-full flex-1 rounded-xl"
+              watchOverflow
+            >
+              {sortedImages.map((image) => (
+                <SwiperSlide key={image.id}>
+                  <div className="flex h-full w-full rounded-lg items-center justify-center select-none cursor-pointer bg-[#e8ddd8] overflow-hidden ring-1 ring-[#4C2922]/10 hover:ring-[#4C2922]/30 transition-all">
+                    <Image
+                      priority unoptimized
+                      src={image.url}
+                      width={image.width}
+                      height={image.height}
+                      alt={product.title}
+                      className="block h-full w-full object-cover"
+                    />
+                  </div>
+                </SwiperSlide>
+              ))}
             </Swiper>
-            <div
-              className='flex items-center justify-center cursor-pointer'
+            <button
               ref={navNextRef}
-              key="nav-next">
+              className="flex-shrink-0 flex items-center justify-center w-8 h-8 rounded-lg hover:bg-[#4C2922]/8 transition-colors"
+            >
               <ArrowEnabled />
-            </div>
+            </button>
           </div>
         </div>
       )}
+
+      {/* Modal — z-[60] covers sticky navbar (z-50) */}
       {modal && (
-        <div className='fixed inset-0 z-20 flex flex-row bg-white'>
-          <div className='h-full min-w-0' style={{ width: "calc(100% - 400px)" }}>
-            <div className='size-full flex items-center justify-center'>
-              <div className='w-full h-full m-2 bg-main-color'>
-                <Swiper
-                  key="modal-swiper"
-                  onSwiper={(swiper) => {
-                    modalSwiperRef.current = swiper;
-                  }}
-                  onSlideChange={handleModalSlideChange}
-                  slidesPerView={1}
-                  spaceBetween={10}
-                  modules={[Navigation, Thumbs]}
-                  navigation
-                  className='h-full w-full'
-                  observer={true}
-                  observeParents={true}
-                  updateOnWindowResize={true}
-                  watchOverflow={true}>
-                  {sortedEnlargedImages.map((image) => {
-                    return (
-                      <SwiperSlide key={image.id}>
-                        <div className='flex h-full w-full items-center justify-center select-none'>
-                          <Image
-                            priority
-                            unoptimized
-                            src={image.url}
-                            width={image.width}
-                            height={image.height}
-                            alt={product.title}
-                            className='block h-full w-full object-contain'
-                          />
-                        </div>
-                      </SwiperSlide>
-                    );
-                  })}
-                </Swiper>
-              </div>
-            </div>
+        <div className="fixed inset-0 z-[60] flex" style={{ background: "#111" }}>
+
+          {/* Full-bleed image swiper — no padding, images fill entire pane */}
+          <div className="flex-1 min-w-0 relative bg-[#111]">
+            <Swiper
+              onSwiper={(s) => { modalSwiperRef.current = s; }}
+              onSlideChange={handleModalSlideChange}
+              slidesPerView={1}
+              spaceBetween={0}
+              modules={[Navigation, Thumbs]}
+              navigation
+              className="h-full w-full"
+              observer observeParents updateOnWindowResize watchOverflow
+            >
+              {sortedEnlargedImages.map((image) => (
+                <SwiperSlide key={image.id}>
+                  <div className="flex h-full w-full items-center justify-center select-none">
+                    <Image
+                      priority unoptimized
+                      src={image.url}
+                      width={image.width}
+                      height={image.height}
+                      alt={product.title}
+                      className="block w-full h-full object-contain"
+                    />
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
           </div>
-          <div className='h-full w-[400px] overflow-y-scroll'>
-            <div className='p-4 flex justify-end'>
-              <span className='cursor-pointer' onClick={() => setModal(!modal)}>
-                <CloseIcon />
-              </span>
+
+          {/* Info panel — warm light background */}
+          <div
+            className="w-full max-w-[320px] lg:max-w-sm h-full overflow-y-auto flex-shrink-0 flex flex-col"
+            style={{
+              background: "linear-gradient(180deg, #fdf8f5 0%, #f5ede7 100%)",
+              borderLeft: "1px solid rgba(76,41,34,0.12)",
+            }}
+          >
+            {/* Sticky close navbar */}
+            <div
+              className="sticky top-0 z-10 flex items-center justify-end px-5 h-14 flex-shrink-0"
+              style={{
+                background: "rgba(255,255,255,0.95)",
+                backdropFilter: "blur(12px)",
+                borderBottom: "1px solid rgba(76,41,34,0.10)",
+                boxShadow: "0 1px 0 rgba(255,255,255,0.8), 0 2px 12px rgba(76,41,34,0.06)",
+              }}
+            >
+              <button
+                onClick={() => setModal(false)}
+                className="flex items-center justify-center w-9 h-9 rounded-full text-[#4C2922] transition-all duration-150 active:scale-95"
+                style={{
+                  background: "rgba(76,41,34,0.06)",
+                  border: "1px solid rgba(76,41,34,0.10)",
+                }}
+                onMouseEnter={e => {
+                  const b = e.currentTarget as HTMLButtonElement;
+                  b.style.background = "linear-gradient(160deg, #7a3d2e 0%, #4C2922 100%)";
+                  b.style.color = "white";
+                  b.style.borderColor = "transparent";
+                  b.style.boxShadow = "0 4px 12px rgba(76,41,34,0.30), inset 0 1px 0 rgba(255,210,180,0.15)";
+                }}
+                onMouseLeave={e => {
+                  const b = e.currentTarget as HTMLButtonElement;
+                  b.style.background = "rgba(76,41,34,0.06)";
+                  b.style.color = "#4C2922";
+                  b.style.borderColor = "rgba(76,41,34,0.10)";
+                  b.style.boxShadow = "none";
+                }}
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2.5} viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
-            <div className='m-{70px} p-4'>
-              <h1 className='font-bold text-2xl'>{product.title}</h1>
-            </div>
-            <div className='p-4'>
-              <p>
+
+            {/* Content */}
+            <div className="px-6 pb-8 flex flex-col gap-4">
+              <div
+                className="h-px w-10 rounded"
+                style={{ background: "linear-gradient(90deg, #4C2922, transparent)" }}
+              />
+              <h1
+                className="text-xl font-bold leading-snug"
+                style={{ color: "#2a1510" }}
+              >
+                {product.title}
+              </h1>
+              <p className="text-sm leading-relaxed text-[#5a3a30]/80">
                 <TextWithBreaks text={product.description} />
               </p>
             </div>
