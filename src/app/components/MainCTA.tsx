@@ -1,7 +1,24 @@
+"use client";
+
 import Link from "next/link";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const MainCTA = ({ text, noaction }: { text: string; noaction?: boolean }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(/Mobi|Android/i.test(navigator.userAgent));
+  }, []);
+
+  // Format phone: "+48601208409" → "+48 601 208 409"
+  const formatPhone = (raw: string) =>
+    raw.replace(/[^\d+]/g, "").replace(/^(\+\d{2})(\d{3})(\d{3})(\d{3})$/, "$1 $2 $3 $4");
+
+  // Format price: "3500 zł" → "3 500 zł", "10000 zł" → "10 000 zł"
+  const formatPrice = (raw: string) =>
+    raw.replace(/(\d+)/, (n) => n.replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0"));
+
+  const displayText = noaction ? formatPrice(text) : formatPhone(text);
   if (noaction && (text === "0 zł" || text.startsWith("0 "))) {
     return null;
   }
@@ -27,7 +44,7 @@ const MainCTA = ({ text, noaction }: { text: string; noaction?: boolean }) => {
           <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
           <line x1="7" y1="7" x2="7.01" y2="7" />
         </svg>
-        <span>{text}</span>
+        <span>{displayText}</span>
       </div>
     );
   }
@@ -64,9 +81,15 @@ const MainCTA = ({ text, noaction }: { text: string; noaction?: boolean }) => {
         <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
       </svg>
 
-      <span className="relative text-sm font-bold tracking-widest uppercase">
-        Zadzwoń teraz
-      </span>
+      <div className="relative flex flex-col leading-tight">
+        {isMobile ? (
+          <span className="text-sm font-bold tracking-widest uppercase">
+            Zadzwoń teraz
+          </span>
+        ) : (
+          <span className="text-base font-bold tracking-wide">{displayText}</span>
+        )}
+      </div>
     </Link>
   );
 };
