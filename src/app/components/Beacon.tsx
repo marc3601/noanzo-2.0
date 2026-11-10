@@ -3,15 +3,20 @@
 import React, { useEffect } from "react";
 import sendBeacon from "../utils/sendBeacon";
 
+const PRIMARY_URL = "https://admin.noanzo.pl/analitics";
+const BETA_URL = process.env.NEXT_PUBLIC_ANALYTICS_BETA_URL;
+
 const Beacon = () => {
   useEffect(() => {
-    const source = document.referrer;
-    const location = window.location.href;
+    const payload = {
+      ref: document.referrer,
+      loc: window.location.href,
+    };
 
-    sendBeacon("https://admin.noanzo.pl/analitics", {
-      ref: source,
-      loc: location,
-    });
+    sendBeacon(PRIMARY_URL, payload);
+
+    // Test copy to the new server (enabled only when the env var is set)
+    if (BETA_URL) sendBeacon(BETA_URL, payload);
   }, []);
   return <></>;
 };
